@@ -1,0 +1,26 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: myapp
+  namespace: argocd
+spec:
+  project: default
+
+  # 소스 (Git 저장소)
+  source:
+    repoURL: https://github.com/janghyn97-dotcom/argocd-test-repo.git
+    targetRevision: HEAD
+    path: .
+
+  # 대상 (K8s 클러스터)
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: default
+
+  # 동기화 정책
+  syncPolicy:
+    automated:
+      prune: true       # Git에서 삭제 시 클러스터에서도 삭제
+      selfHeal: true    # Drift 자동 복구
+    syncOptions:
+      - CreateNamespace=true
